@@ -1,0 +1,7 @@
+{
+  "version": "0.0.1-test",
+  "base": {
+    "population": 328200000,
+    "country": "US"
+  }
+}
