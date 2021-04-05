@@ -1,5 +1,12 @@
 package edu.neu.info6205;
 
+/**
+ * Main
+ *
+ * @author Joseph Yuanhao Li
+ * @date 4/4/21 20:32
+ */
+
 import edu.neu.info6205.model.City;
 import edu.neu.info6205.model.Person;
 import edu.neu.info6205.model.Point;

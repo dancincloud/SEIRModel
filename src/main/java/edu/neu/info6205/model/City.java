@@ -1,11 +1,23 @@
 package edu.neu.info6205.model;
 
+/**
+ * City
+ *
+ * @author Joseph Yuanhao Li
+ * @date 4/4/21 20:32
+ */
+
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 
 public class City {
     private long population;
+    private long susceptible;
+    private long exposed;
+    private long infected;
+    private long removed;
+
     private double radius; // the radius of the city
 
     private List<Person> residents;
@@ -62,13 +74,9 @@ public class City {
         for(int i = 0; i < infected; i++){
             residents.get(i).setStatus(PersonStatus.Infected);
         }
+        this.infected = infected;
+        this.susceptible = population - infected;
     }
-
-    private long susceptible;
-    private long exposed;
-    private long infected;
-    private long removed;
-
 
     // calculate the status of city and residents in next day
     public void update(){

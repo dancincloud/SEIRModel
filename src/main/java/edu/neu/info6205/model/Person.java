@@ -1,5 +1,12 @@
 package edu.neu.info6205.model;
 
+/**
+ * Person
+ *
+ * @author Joseph Yuanhao Li
+ * @date 4/1/21 20:32
+ */
+
 import java.util.Random;
 
 public class Person implements Comparable<Person> {

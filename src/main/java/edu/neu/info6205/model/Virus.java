@@ -1,5 +1,12 @@
 package edu.neu.info6205.model;
 
+/**
+ * Virus
+ *
+ * @author Joseph Yuanhao Li
+ * @date 4/1/21 20:32
+ */
+
 public class Virus {
     private double R; // Basic reproduction number
     private double K; // Dispersion factor

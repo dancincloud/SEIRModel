@@ -1,5 +1,12 @@
 package edu.neu.info6205.model;
 
+/**
+ * Point
+ *
+ * @author Joseph Yuanhao Li
+ * @date 4/1/21 20:32
+ */
+
 public class Point {
     private double x;
     private double y;
