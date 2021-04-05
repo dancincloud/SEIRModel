@@ -1,7 +1,8 @@
 {
   "version": "0.0.1",
   "base": {
-    "population": 328200000,
+    "infected": 10,
+    "population": 10000,
     "country": "US"
   }
 }

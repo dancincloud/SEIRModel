@@ -1,16 +1,17 @@
+# Created by https://www.gitignore.io/api/java
+# Created by https://www.gitignore.io/api/intellij
+
+# Java
 # Compiled class file
 *.class
 
-# Log file
+# Log
 *.log
 
-# BlueJ files
+# BlueJ
 *.ctxt
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
+# Package
 *.jar
 *.war
 *.nar
@@ -18,8 +19,29 @@
 *.zip
 *.tar.gz
 *.rar
+*.tmp
+*.bak
+*.swp
+*.iml
+*.ipr
+*.iws
+*.ids
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# Eclipse
+.settings/
+.classpath
+.loadpath
 
-/temp
+# IntellJ
+.idea/*
+target/
+*/build/
+/out/
+/loggingPath_IS_UNDEFINED
+
+# Xcode
+*.xcodeproj/
+
+# Mac
+.DS_Store
+Thumbs.db
