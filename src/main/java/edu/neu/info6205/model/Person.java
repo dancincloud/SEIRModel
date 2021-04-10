@@ -7,36 +7,27 @@ package edu.neu.info6205.model;
  * @date 4/1/21 20:32
  */
 
+import edu.neu.info6205.helper.PersonStatus;
+import edu.neu.info6205.helper.Point;
+
 import java.util.Random;
 
 public class Person implements Comparable<Person> {
+
+    private static Virus virus; // Virus spreading in people
+
     private Point location;
     private PersonStatus status = PersonStatus.Susceptible;
-
-    private static long latentPeriod = 14; // Average time of an individual is pre-infectious
-    private static long infectiousPeriod = 30; // Average time of an individual is pre-infectious
-
 
     static final private Random random = new Random();
 
     /* The rate of people go outside everyday */
     static private double activityRate;
 
-    static public void setActivityRate(double activityRate){
-        Person.activityRate = activityRate;
-    }
-
-    static public double getActivityRate(){
-        return Person.activityRate;
-    }
-
-
     /* The active radius */
     static private double activityRadius;
 
-    static public void setActivityRadius(double activityRadius){
-        Person.activityRadius = activityRadius;
-    }
+    private long duraion;  // The duration of current status
 
     static public double getActivityRadius(){
         return  Person.activityRadius;
@@ -51,29 +42,37 @@ public class Person implements Comparable<Person> {
         this.status = status;
     }
 
-    private long duraion;  // The duration of current status
+
+    /* Setter and Getter */
+    public static void setVirus(Virus virus){
+        Person.virus = virus;
+    }
 
     public void setStatus(PersonStatus status){
-        if(status != this.status){
-            // status changed, reset duration
-            duraion = 0;
-        }
         this.status = status;
     }
 
     public PersonStatus getStatus(){
-        if(status == PersonStatus.Exposed && duraion >= latentPeriod){
-            setStatus(PersonStatus.Infected);
-        }else if(status == PersonStatus.Infected && duraion >= infectiousPeriod - latentPeriod){
+        if(status == PersonStatus.Infected && duraion > virus.getRecoveryPeriod()){
+            duraion = 0;
             setStatus(PersonStatus.Removed);
+        }else if(status == PersonStatus.Exposed && duraion > virus.getLatentPeriod()){
+            setStatus(PersonStatus.Infected);
         }
 
         return status;
     }
 
-    //if this person can infect others(infected or exposed more than half of virus's latentPeriod)
-    public boolean isContagious(){
-        return getStatus() == PersonStatus.Infected || (status == PersonStatus.Exposed && duraion >= latentPeriod / 2);
+    static public void setActivityRate(double activityRate){
+        Person.activityRate = activityRate;
+    }
+
+    static public double getActivityRate(){
+        return Person.activityRate;
+    }
+
+    static public void setActivityRadius(double activityRadius){
+        Person.activityRadius = activityRadius;
     }
 
     public double getX(){
@@ -84,8 +83,15 @@ public class Person implements Comparable<Person> {
         return location.getY();
     }
 
+
+    //if this person can infect others(people who has been infected or has been exposed for more than half of virus's latentPeriod)
+    public boolean isContagious(){
+        return status == PersonStatus.Infected || (status == PersonStatus.Exposed && duraion > virus.getLatentPeriod());
+    }
+
     public void update(){
-        duraion++;
+        // count the days which virus exist in this person
+        if(status == PersonStatus.Exposed || status == PersonStatus.Infected) duraion++;
 
         randomMove();
     }

@@ -7,22 +7,26 @@ package edu.neu.info6205.model;
  * @date 4/4/21 20:32
  */
 
-import java.awt.*;
+import edu.neu.info6205.helper.PersonStatus;
+import edu.neu.info6205.helper.Point;
+
 import java.util.*;
 import java.util.List;
 
 public class City {
-    private long population;
-    private long susceptible;
-    private long exposed;
-    private long infected;
-    private long removed;
+    private static Virus virus; // the virus spreading in the city
 
-    private double radius; // the radius of the city
+    private long population; // total number of residents in the city
+    private long susceptible; // total number of susceptible residents
+    private long exposed;   // total number of exposed residents(Incubation period patient)
+    private long infected; // total number of infected residents
+    private long removed;  // total number of recovered or dead residents
 
-    private List<Person> residents;
+    private double radius; // the radius of the city (mile)
 
-    private Point center;
+    private List<Person> residents; // Person objects' list
+
+    private Point center; // Coordinates of the city center (for drawing)
 
     private static final Random random = new Random();
 
@@ -37,14 +41,26 @@ public class City {
         this.generateResidents();
     }
 
-    public long getPopulation(){
-        return population;
+    /* initial condition  */
+//    public static void setVirus(){
+//
+//    }
+
+
+    // set the virus and initial infected population
+    public void initInfected(Virus virus, long infected){
+        City.virus = virus;
+
+        Person.setVirus(virus);
+
+        for(int i = 0; i < infected; i++){
+            residents.get(i).setStatus(PersonStatus.Infected);
+        }
+        this.infected = infected;
+        this.susceptible = population - infected;
     }
 
-    public List<Person> getResidents(){
-        return residents;
-    }
-
+    /* Setter and Getter */
     public double getRadius(){
         return radius;
     }
@@ -57,25 +73,35 @@ public class City {
         return center.getY();
     }
 
+    public List<Person> getResidents(){
+        return residents;
+    }
+
+    public long getPopulation(){
+        return population;
+    }
+
+    public long getSusceptible(){
+        return susceptible;
+    }
+
+    public long getExposed(){
+        return exposed;
+    }
+
+    public long getInfected(){
+        return infected;
+    }
+
+    public long getRemoved() {
+        return removed;
+    }
+
+    /* Public Methods */
     // check if the location is out of the city area
     public boolean ifOutOfArea(Person p){
         if(Math.abs(p.getX() - center.getX()) > radius || Math.abs(p.getY() - center.getY()) > radius) return true;
         return false;
-    }
-
-    // generate residents (total number is population)
-    private void generateResidents(){
-        for(int i = 0; i < population; i++){
-            residents.add(personFactory());
-        }
-    }
-
-    public void initInfected(long infected){
-        for(int i = 0; i < infected; i++){
-            residents.get(i).setStatus(PersonStatus.Infected);
-        }
-        this.infected = infected;
-        this.susceptible = population - infected;
     }
 
     // calculate the status of city and residents in next day
@@ -99,35 +125,31 @@ public class City {
             }
         }
 
-        // reset SEIR
+        // reset S E I R population
         susceptible = 0;
         exposed = 0;
         infected = 0;
         removed = 0;
 
+        // count S E I R population
         for(Person p : residents){
             p.update();
 
-            //count SEIR
             switch (p.getStatus()) {
-                case Susceptible: {
-                    // susceptible
+                case Susceptible: {  // susceptible
                     susceptible++;
                     break;
                 }
-                case Exposed: {
-                    // exposed)
+                case Exposed: { // exposed
                     exposed++;
                     break;
                 }
 
-                case Infected: {
-                    // infected
+                case Infected: { // infected
                     infected++;
                     break;
                 }
-                case Removed : {
-                    //Recoverd or dead
+                case Removed : { // Recovered or dead
                     removed++;
                     break;
                 }
@@ -138,20 +160,12 @@ public class City {
         }
     }
 
-    public long getSusceptible(){
-        return susceptible;
-    }
-
-    public long getExposed(){
-        return exposed;
-    }
-
-    public long getInfected(){
-        return infected;
-    }
-
-    public long getRemoved() {
-        return removed;
+    /* Private Methods */
+    // generate residents (total number is population)
+    private void generateResidents(){
+        for(int i = 0; i < population; i++){
+            residents.add(personFactory());
+        }
     }
 
     // nextGaussian() 99.74% in [-3,3]

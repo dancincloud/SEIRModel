@@ -1,4 +1,4 @@
-package edu.neu.info6205.model;
+package edu.neu.info6205.helper;
 
 /**
  * Point

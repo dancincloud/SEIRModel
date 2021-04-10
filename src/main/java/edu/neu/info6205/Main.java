@@ -7,11 +7,12 @@ package edu.neu.info6205;
  * @date 4/4/21 20:32
  */
 
+import edu.neu.info6205.helper.ConfigParser;
 import edu.neu.info6205.model.City;
 import edu.neu.info6205.model.Person;
-import edu.neu.info6205.model.Point;
+import edu.neu.info6205.model.Virus;
+import edu.neu.info6205.helper.Point;
 
-import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,16 +21,19 @@ public class Main {
 
     // The entry of the whole program
     public static void main(String[] args){
-        //Initial city and residents
+        // Initial virus
+        Virus virus = Virus.buildVirusFromConfig("Virus.properties");
+        ConfigParser.printObject(virus);
+
+
+        // Initial city and residents
         Person.setActivityRadius(10);
         Person.setActivityRate(1);
 
-        City city = new City(1000, 300, new Point(400, 400));
-        city.initInfected(10);
+        City city = new City(10000, 300, new Point(400, 400));
+        city.initInfected(virus , 10);
 
         System.out.printf("%-20s %-20s %-20s %-20s %-20s\n", "Days", "Susceptible", "Exposed", "Infected", "Removed");
-
-
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
