@@ -7,6 +7,7 @@ package edu.neu.info6205;
  * @date 4/4/21 20:32
  */
 
+import edu.neu.info6205.helper.CSVUtil;
 import edu.neu.info6205.helper.ConfigParser;
 import edu.neu.info6205.model.Residence;
 import edu.neu.info6205.model.Person;
@@ -14,6 +15,9 @@ import edu.neu.info6205.model.Timeline;
 import edu.neu.info6205.model.Virus;
 import edu.neu.info6205.helper.Point;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -22,6 +26,13 @@ public class Main {
 
     // The entry of the whole program
     public static void main(String[] args){
+        // output data
+        List<String> logs = new ArrayList<String>();
+
+        // set output file path
+        String path = "/Users/yamato/Downloads/SEIR.csv";
+
+
         // Initial virus
         Virus virus = Virus.buildByConfig("Virus.properties");
 
@@ -39,7 +50,9 @@ public class Main {
 
         ConfigParser.printObject(residence);
 
-        System.out.printf("%-20s %-20s %-20s %-20s %-20s\n", "Days", "Susceptible", "Exposed", "Infected", "Removed");
+        String head = String.format("%-20s,%-20s,%-20s,%-20s,%-20s", "Days", "Susceptible", "Exposed", "Infected", "Removed");
+        logs.add(head);
+        System.out.println(head.replace(',', ' '));
 
         Thread timelineThread = new Thread(new Timeline(residence));
 
@@ -50,10 +63,14 @@ public class Main {
 
                 days++;
 
-                System.out.printf("%-20d %-20d %-20d %-20d %-20d\n", days, residence.getSusceptible(), residence.getExposed(), residence.getInfected(), residence.getRemoved());
+                String s = String.format("%-20d,%-20d,%-20d,%-20d,%-20d", days, residence.getSusceptible(), residence.getExposed(), residence.getInfected(), residence.getRemoved());
+                logs.add(s);
+                System.out.println(s.replace(',', ' '));
 
                 if(residence.getExposed() == 0 && residence.getInfected() == 0){
-                    System.out.printf("After fighting with Virus for %d days, the pandemic is over and human win!", days);
+                    System.out.printf("After fighting with Virus for %d days, the pandemic is over and human win!\n", days);
+
+                    if(CSVUtil.exportCsv(new File(path), logs)) System.out.println("Write CSV Success: " + path);
                     break;
                 }
 
