@@ -10,6 +10,7 @@ package edu.neu.info6205.model;
 import edu.neu.info6205.helper.PersonStatus;
 import edu.neu.info6205.helper.Point;
 
+import java.util.Comparator;
 import java.util.Random;
 
 public class Person implements Comparable<Person> {
@@ -17,6 +18,7 @@ public class Person implements Comparable<Person> {
     private static Virus virus; // Virus spreading in people
 
     private Point location;
+
     private PersonStatus status = PersonStatus.Susceptible;
 
     static final private Random random = new Random();
@@ -27,7 +29,7 @@ public class Person implements Comparable<Person> {
     /* The active radius */
     static private double activityRadius;
 
-    private long duraion;  // The duration of current status
+    private long duration = 0;  // The duration of current status
 
     static public double getActivityRadius(){
         return  Person.activityRadius;
@@ -53,10 +55,10 @@ public class Person implements Comparable<Person> {
     }
 
     public PersonStatus getStatus(){
-        if(status == PersonStatus.Infected && duraion > virus.getRecoveryPeriod()){
-            duraion = 0;
+        if(status == PersonStatus.Infected && duration > virus.getRecoveryPeriod()){
+            duration = 0;
             setStatus(PersonStatus.Removed);
-        }else if(status == PersonStatus.Exposed && duraion > virus.getLatentPeriod()){
+        }else if(status == PersonStatus.Exposed && duration > virus.getLatentPeriod()){
             setStatus(PersonStatus.Infected);
         }
 
@@ -75,6 +77,14 @@ public class Person implements Comparable<Person> {
         Person.activityRadius = activityRadius;
     }
 
+    public Point getLocation() {
+        return location;
+    }
+
+    public void setLocation(Point location) {
+        this.location = location;
+    }
+
     public double getX(){
         return location.getX();
     }
@@ -86,12 +96,12 @@ public class Person implements Comparable<Person> {
 
     //if this person can infect others(people who has been infected or has been exposed for more than half of virus's latentPeriod)
     public boolean isContagious(){
-        return status == PersonStatus.Infected || (status == PersonStatus.Exposed && duraion > virus.getLatentPeriod());
+        return status == PersonStatus.Infected || (status == PersonStatus.Exposed && duration > virus.getLatentPeriod());
     }
 
     public void update(){
         // count the days which virus exist in this person
-        if(status == PersonStatus.Exposed || status == PersonStatus.Infected) duraion++;
+        if(status == PersonStatus.Exposed || status == PersonStatus.Infected) duration++;
 
         randomMove();
     }
@@ -107,10 +117,32 @@ public class Person implements Comparable<Person> {
         int cmp = Double.compare(getX(), p.getX());
         if(cmp != 0) return cmp;
 
-        return Double.compare(getY(), getX());
+        return Double.compare(getY(), getY());
     }
 
     public static double distance(Person p1, Person p2){
         return Point.distance(p1.location, p2.location);
     }
+
+    // sort by x coordinate
+    public static Comparator<Person> xComparator = new Comparator<Person>() {
+        @Override
+        public int compare(Person o1, Person o2) {
+            int cmp = Double.compare(o1.getX(), o2.getX());
+            if(cmp != 0) return cmp;
+
+            return Double.compare(o1.getY(), o2.getY());
+        }
+    };
+
+    // sort by y coordinate
+    public static Comparator<Person> yComparator = new Comparator<Person>() {
+        @Override
+        public int compare(Person o1, Person o2) {
+            int cmp = Double.compare(o1.getY(), o2.getY());
+            if(cmp != 0) return cmp;
+
+            return Double.compare(o1.getX(), o2.getX());
+        }
+    };
 }

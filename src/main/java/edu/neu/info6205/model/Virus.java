@@ -27,7 +27,7 @@ public class Virus {
 
     public Virus(){}
 
-    public static Virus buildVirusFromConfig(String filePath){
+    public static Virus buildByConfig(String filePath){
         return (Virus) ConfigParser.configToClass(filePath, Virus.class);
     }
 
