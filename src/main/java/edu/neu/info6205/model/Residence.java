@@ -18,17 +18,18 @@ public class Residence {
     private String name; // residence's name
 
     private Virus virus; // the virus spreading in the residence
-    private long population; // population of city
+
+    private long population; // the total population.
     private double density; // population density in residence (/km2)
 
     private double radius; // the radius of the residence (m)
 
     private Person[] residents; // Person objects' array
 
-    private long susceptible; // total number of susceptible residents
-    private long exposed;   // total number of exposed residents(Incubation period patient)
-    private long infected; // total number of infected residents
-    private long removed;  // total number of recovered or dead residents ( = dead + recovered )
+    private long susceptible; //  the stock of susceptible population
+    private long exposed;   // the stock of exposed population(Incubation period patient)
+    private long infected; // the stock of infected population
+    private long removed;  // the stock of removed population ( = dead + recovered )
 
     private long dead; // total number of dead residents ( = removed - recovered)
 

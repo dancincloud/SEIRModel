@@ -18,14 +18,14 @@ public class Virus {
     private double K; // Dispersion factor
 
 
-    private double infectiousRadius; // infectious radius
+    private double infectiousRadius; // infectious radius (/m)
+    private double infectiousRate = 0.27; // represents the probability of the disease being transmitted between a susceptible and an infectious individual (0.27 according to literature)
 
-    private double recoveryRate; // the rate which infected people can  γ
-    private double incidenceRate; // the rate which infected people show symptoms
+    private double recoveryRate; //  the rate which infected people can recover
+    private double incidenceRate; // the rate at which an exposed person becomes infective (0.2 according to literature).
 
     private double latentPeriod; // Average time of an individual is pre-infectious
     private double infectiousPeriod; // Average time of an individual is infectious
-
 
     public Virus(){}
 
@@ -64,6 +64,14 @@ public class Virus {
 
     public void setInfectiousRadius(double infectiousRadius) {
         this.infectiousRadius = infectiousRadius;
+    }
+
+    public double getInfectiousRate() {
+        return infectiousRate;
+    }
+
+    public void setInfectiousRate(double infectiousRate) {
+        this.infectiousRate = infectiousRate;
     }
 
     public double getRecoveryRate() {

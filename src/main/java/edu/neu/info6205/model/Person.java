@@ -9,6 +9,7 @@ package edu.neu.info6205.model;
 
 import edu.neu.info6205.helper.PersonStatus;
 import edu.neu.info6205.helper.Point;
+import edu.neu.info6205.helper.RandomUtil;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -18,27 +19,30 @@ import java.util.Random;
 public class Person implements Comparable<Person> {
     private static Virus virus; // Virus spreading in people
 
-    private Point location; // person's coordinate
-
-    private PersonStatus status = PersonStatus.Susceptible; // person's status
-
-    private boolean dead; // if this guy dead
-
-    private List<Person> reproductList; // record people who infected by this guys
-
     /* The rate of people go outside everyday */
     static private double activityRate;
 
     /* The active radius */
     static private double activityRadius;
 
+    private Point location; // person's coordinate
+
+    private PersonStatus status = PersonStatus.Susceptible; // person's status
+
+    private boolean superSpreader = false; // if is superSpreader
+
     private long duration = 0;  // The duration of current status
+
+    private boolean dead; // if this guy dead
+
+    private List<Person> reproductList; // record people who infected by this guys
+
 
     static public double getActivityRadius(){
         return  Person.activityRadius;
     }
 
-    private static final Random random = new Random();
+    private static final Random random = RandomUtil.random();
 
     public Person(Point location ){
         this.location = location;
@@ -69,6 +73,14 @@ public class Person implements Comparable<Person> {
         }
 
         return status;
+    }
+
+    public boolean isSuperSpreader() {
+        return superSpreader;
+    }
+
+    public void setSuperSpreader(boolean superSpreader) {
+        this.superSpreader = superSpreader;
     }
 
     // check if this person dead according parameters(if receive treatment / recoveryRate)
@@ -136,8 +148,8 @@ public class Person implements Comparable<Person> {
     }
 
     public void randomMove(){
-        double dx = Person.activityRadius / 3.0 * random.nextGaussian();
-        double dy = Person.activityRadius / 3.0 * random.nextGaussian();
+        double dx = Person.activityRadius / 2.0 * random.nextGaussian();
+        double dy = Person.activityRadius / 2.0 * random.nextGaussian();
 
         location = new Point(location.getX() + dx, location.getY() + dy);
     }

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -85,14 +87,21 @@ public class ConfigParser {
     }
 
     // use reflection to print object
-    public static void printObject(Object object) {
+    public static List<String> printObject(Object object) {
 
+        List<String> logs = new ArrayList<>();
+
+        logs.add(object.getClass().toString());
         System.out.println("/**********   " + object.getClass() + "   **********/");
+
         Field[] fields = object.getClass().getDeclaredFields();
         for (Field filed : fields) {
             try {
                 filed.setAccessible(true);
+
+                logs.add(filed.getName() + "," + filed.get(object));
                 System.out.println(filed.getName() + " : " + filed.get(object));
+
                 filed.setAccessible(false);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -100,6 +109,8 @@ public class ConfigParser {
         }
 
         System.out.println();
+
+        return logs;
     }
 }
 

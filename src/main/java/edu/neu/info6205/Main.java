@@ -9,15 +9,12 @@ package edu.neu.info6205;
 
 import edu.neu.info6205.helper.CSVUtil;
 import edu.neu.info6205.helper.ConfigParser;
-import edu.neu.info6205.model.Residence;
-import edu.neu.info6205.model.Person;
-import edu.neu.info6205.model.Timeline;
-import edu.neu.info6205.model.Virus;
+import edu.neu.info6205.model.*;
 
 import java.io.File;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class Main {
     // The entry of the whole program
@@ -26,30 +23,35 @@ public class Main {
         List<String> logs = new ArrayList<String>();
 
         // set output file path
-        String path = "/Users/yamato/Downloads/SEIR.csv";
+        String path = "/Users/yamato/Downloads/SEIR-2019.csv";
 
 
         // Initial virus
         Virus virus = Virus.buildByConfig("Virus/Covid-19.properties");
+        logs.addAll(ConfigParser.printObject(virus));
 
-        ConfigParser.printObject(virus);
 
+        // Initial Person class
+        Properties personProps = ConfigParser.parseConfig("Person.properties");
+        Person.setActivityRadius(Double.parseDouble(personProps.getProperty("activityRadius")));
+        Person.setActivityRate(Double.parseDouble(personProps.getProperty("activityRate")));
 
-        // Initial city and residents
-        Person.setActivityRadius(300); // m
-        Person.setActivityRate(1);
-
-        Residence residence = Residence.buildByConfig("Residence/Ideal.properties");
+        // Initial residence and residents
+        Residence residence = Residence.buildByConfig("Residence/Utopia.properties");
         residence.setVirus(virus);
         residence.init();
+        logs.addAll(ConfigParser.printObject(residence));
 
-        ConfigParser.printObject(residence);
+        // Initial measure
+        Measure measure = Measure.buildByConfig("Measure/Utopia.properties");
+        logs.addAll(ConfigParser.printObject(measure));
+
 
         String head = String.format("%-15s,%-15s,%-15s,%-15s,%-15s,%-15s,%-10s,%-10s", "Days", "Susceptible", "Exposed", "Infected", "Recovered", "Dead", "R", "K");
         logs.add(head);
         System.out.println(head.replace(',', ' '));
 
-        Timeline timeline = new Timeline(residence);
+        Timeline timeline = new Timeline(residence, measure);
 
         Thread timelineThread = new Thread(timeline);
 
@@ -58,7 +60,7 @@ public class Main {
             while (true) {
                 timelineThread.run();
 
-                String s = String.format("%-15d,%-15d,%-15d,%-15d,%-15d,%-15d,%-10.2f,%-10.2f", timeline.getDays(), residence.getSusceptible(), residence.getExposed(), residence.getInfected(), residence.getRecovered(), residence.getDead(), timeline.getR(),timeline.getK());
+                String s = String.format("%-15d,%-15d,%-15d,%-15d,%-15d,%-15d,%-10.4f,%-10.4f", timeline.getDays(), residence.getSusceptible(), residence.getExposed(), residence.getInfected(), residence.getRecovered(), residence.getDead(), timeline.getR(),timeline.getK());
                 logs.add(s);
                 System.out.println(s.replace(',', ' '));
 
