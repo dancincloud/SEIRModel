@@ -1,7 +1,6 @@
 package edu.neu.info6205.model;
 
 import edu.neu.info6205.helper.ConfigParser;
-import edu.neu.info6205.measure.Barrier;
 
 /**
  * Measures to respond to the epidemic

@@ -37,13 +37,13 @@ public class Main {
         Person.setActivityRate(Double.parseDouble(personProps.getProperty("activityRate")));
 
         // Initial residence and residents
-        Residence residence = Residence.buildByConfig("Residence/Utopia.properties");
+        Residence residence = Residence.buildByConfig("Residence/Boston.properties");
         residence.setVirus(virus);
         residence.init();
         logs.addAll(ConfigParser.printObject(residence));
 
         // Initial measure
-        Measure measure = Measure.buildByConfig("Measure/Utopia.properties");
+        Measure measure = Measure.buildByConfig("Measure/Boston.properties");
         logs.addAll(ConfigParser.printObject(measure));
 
 
