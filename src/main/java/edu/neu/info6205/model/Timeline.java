@@ -3,7 +3,6 @@ package edu.neu.info6205.model;
 import edu.neu.info6205.helper.PersonStatus;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Calculate the latest daily epidemic situation
@@ -13,20 +12,42 @@ import java.util.List;
  */
 public class Timeline implements Runnable {
 
+    private int days; // World time
+
+    private double R; // Basic reproduction number
+    private double K; // Dispersion factor
+
     private Residence residence;
 
     public Timeline(Residence residence){
+        this.days = 0;
+
+        this.R = 0.0;
+        this.K = 0.0;
+
         this.residence = residence;
     }
+
+    /* Getter and Setter */
+    public int getDays() {
+        return days;
+    }
+
+    public double getR() {
+        return R;
+    }
+
+    public double getK() { return K; }
 
     @Override
     public void run() {
         update(residence.getResidents());
+        calculateRK(residence.getResidents());
+        days++;
     }
 
     // calculate the status of city and residents in next day
     public void update(Person[] residents){
-
         Arrays.sort(residents, Person.xComparator);
         spreadVirus(residents);
 
@@ -36,7 +57,7 @@ public class Timeline implements Runnable {
         // reset S E I R population
         residence.resetSEIR();
 
-        long susceptible = 0, exposed = 0, infected = 0, removed = 0;
+        long susceptible = 0, exposed = 0, infected = 0, removed = 0, dead = 0;
 
         // count S E I R population
         for(Person p : residents){
@@ -60,6 +81,7 @@ public class Timeline implements Runnable {
                 }
                 case Removed : { // Recovered or dead
                     removed++;
+                    if(p.isDead()) dead++;
                     break;
                 }
                 default:{
@@ -68,9 +90,7 @@ public class Timeline implements Runnable {
             }
         }
 
-        residence.setSEIR(susceptible, exposed, infected, removed);
-
-//        System.out.printf("update finish\n");
+        residence.setSEIR(susceptible, exposed, infected, removed, dead);
     }
 
     private void spreadVirus(Person[] residents){
@@ -90,11 +110,40 @@ public class Timeline implements Runnable {
 
                 if(p1.isContagious() ^ p2.isContagious()){
                     if(Person.distance(p1, p2) <= virus.getInfectiousRadius()){
-                        if(p1.isContagious()) p2.setStatus(PersonStatus.Exposed);
-                        else p1.setStatus(PersonStatus.Exposed);
+                        if(p1.isContagious()) infect(p1, p2);
+                        else infect(p2, p1);
                     }
                 }
             }
         }
     }
+
+    private void infect(Person source, Person target){
+        target.setStatus(PersonStatus.Exposed);
+        source.addReproduct(target);
+    }
+
+    private void calculateRK(Person[] residents){
+        Arrays.sort(residents, Person.rComparator); // sort to calculate K; The person who infect most people is at first.
+
+        long EISum = residence.getExposed() + residence.getInfected(); // Exposed + Infected
+
+        long EISum80 = (long) (EISum * 0.8);
+
+        long topSpreaders = 0;
+
+        long reproducer = 0; // population of people who infect others(use to calculate R factor)
+        for(Person p : residents){
+            if(p.getReproductList() == null) continue;
+            reproducer++;
+            if(EISum80 > 0){
+                topSpreaders++;
+                EISum80 -= p.getReproductList().size();
+            }
+        }
+
+        this.R = (double) EISum / reproducer;
+        this.K = (double) topSpreaders / EISum;
+    }
+
 }

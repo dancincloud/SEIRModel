@@ -12,6 +12,8 @@ import java.util.Properties;
  */
 
 public class Virus {
+    private String name; // Virus's name
+
     private double R; // Basic reproduction number
     private double K; // Dispersion factor
 
@@ -32,6 +34,14 @@ public class Virus {
     }
 
     /* Setter and Getter */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public double getR() {
         return R;
     }

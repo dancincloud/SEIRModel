@@ -15,6 +15,8 @@ import java.util.*;
 import java.util.List;
 
 public class Residence {
+    private String name; // residence's name
+
     private Virus virus; // the virus spreading in the residence
     private long population; // population of city
     private double density; // population density in residence (/km2)
@@ -26,7 +28,9 @@ public class Residence {
     private long susceptible; // total number of susceptible residents
     private long exposed;   // total number of exposed residents(Incubation period patient)
     private long infected; // total number of infected residents
-    private long removed;  // total number of recovered or dead residents
+    private long removed;  // total number of recovered or dead residents ( = dead + recovered )
+
+    private long dead; // total number of dead residents ( = removed - recovered)
 
     /* Drawing Info */
     private double drawRadius; // radius of the residence when drawing
@@ -56,6 +60,14 @@ public class Residence {
     }
 
     /* Getter and Setter */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public Virus getVirus() {
         return virus;
     }
@@ -100,20 +112,36 @@ public class Residence {
         return removed;
     }
 
+    public long getDead() {
+        return dead;
+    }
+
+    public void setDead(long dead) {
+        this.dead = dead;
+    }
+
+    public long getRecovered() {
+        return removed - dead;
+    }
+
     // reset S E I R population
     public void resetSEIR(){
         susceptible = 0;
         exposed = 0;
         infected = 0;
         removed = 0;
+
+        dead = 0;
     }
 
     // set S E I R population
-    public void setSEIR(long susceptible, long exposed, long infected, long removed){
+    public void setSEIR(long susceptible, long exposed, long infected, long removed, long dead){
         this.susceptible = susceptible;
         this.exposed = exposed;
         this.infected = infected;
         this.removed = removed;
+
+        this.dead = dead;
     }
 
     public Person[] getResidents() {

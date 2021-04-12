@@ -10,18 +10,21 @@ package edu.neu.info6205.model;
 import edu.neu.info6205.helper.PersonStatus;
 import edu.neu.info6205.helper.Point;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
 
 public class Person implements Comparable<Person> {
-
     private static Virus virus; // Virus spreading in people
 
-    private Point location;
+    private Point location; // person's coordinate
 
-    private PersonStatus status = PersonStatus.Susceptible;
+    private PersonStatus status = PersonStatus.Susceptible; // person's status
 
-    static final private Random random = new Random();
+    private boolean dead; // if this guy dead
+
+    private List<Person> reproductList; // record people who infected by this guys
 
     /* The rate of people go outside everyday */
     static private double activityRate;
@@ -34,6 +37,8 @@ public class Person implements Comparable<Person> {
     static public double getActivityRadius(){
         return  Person.activityRadius;
     }
+
+    private static final Random random = new Random();
 
     public Person(Point location ){
         this.location = location;
@@ -59,10 +64,20 @@ public class Person implements Comparable<Person> {
             duration = 0;
             setStatus(PersonStatus.Removed);
         }else if(status == PersonStatus.Exposed && duration > virus.getLatentPeriod()){
+            dead = this.randomDead();
             setStatus(PersonStatus.Infected);
         }
 
         return status;
+    }
+
+    // check if this person dead according parameters(if receive treatment / recoveryRate)
+    private static boolean randomDead(){
+        return random.nextDouble() > virus.getRecoveryRate();
+    }
+
+    public boolean isDead() {
+        return dead;
     }
 
     static public void setActivityRate(double activityRate){
@@ -93,6 +108,20 @@ public class Person implements Comparable<Person> {
         return location.getY();
     }
 
+    public List<Person> getReproductList() {
+        return reproductList;
+    }
+
+    // record person who infected by this guys
+    public void addReproduct(Person p){
+        if(reproductList == null) reproductList = new ArrayList<>();
+        reproductList.add(p);
+    }
+
+    // the size of reproductList
+    public int getReproductNum() {
+        return reproductList == null ? 0 : reproductList.size();
+    }
 
     //if this person can infect others(people who has been infected or has been exposed for more than half of virus's latentPeriod)
     public boolean isContagious(){
@@ -143,6 +172,14 @@ public class Person implements Comparable<Person> {
             if(cmp != 0) return cmp;
 
             return Double.compare(o1.getX(), o2.getX());
+        }
+    };
+
+    // sort by number of people infected by this guy
+    public static Comparator<Person> rComparator = new Comparator<Person>() {
+        @Override
+        public int compare(Person o1, Person o2) {
+            return o1.getReproductNum() - o2.getReproductNum();
         }
     };
 }
