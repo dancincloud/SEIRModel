@@ -141,7 +141,7 @@ public class Timeline implements Runnable {
             target.setStatus(PersonStatus.Exposed);
             source.addReproduct(target);
 
-            source.setSuperSpreader(random.nextFloat() < virus.getK());
+            source.setSuperSpreader(random.nextFloat() < virus.getSuperSpreaderRate());
         }
     }
 
@@ -178,7 +178,7 @@ public class Timeline implements Runnable {
             if(vaccine == 0) break;
 
             if (p.getStatus() == PersonStatus.Susceptible){
-                p.setStatus(PersonStatus.Removed);
+                if(random.nextFloat() < measure.getVaccineEffectiveness()) p.setStatus(PersonStatus.Removed);
                 vaccine--;
             }
         }

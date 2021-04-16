@@ -16,6 +16,7 @@ public class Measure {
     private double maskEffectiveness; //[0,1]
     private double contactTracking; // [0,1]
     private long vaccine; // Number of vaccine per day
+    private double vaccineEffectiveness; // [0,1]
     private long virusTesting; // Number of test per day
 
     public Measure(){}
@@ -78,6 +79,14 @@ public class Measure {
 
     public void setVaccine(long vaccine) {
         this.vaccine = vaccine;
+    }
+
+    public double getVaccineEffectiveness() {
+        return vaccineEffectiveness;
+    }
+
+    public void setVaccineEffectiveness(double vaccineEffectiveness) {
+        this.vaccineEffectiveness = vaccineEffectiveness;
     }
 
     public long getVirusTesting() {

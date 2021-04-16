@@ -2,8 +2,6 @@ package edu.neu.info6205.model;
 
 import edu.neu.info6205.helper.ConfigParser;
 
-import java.util.Properties;
-
 /**
  * Virus
  *
@@ -15,7 +13,7 @@ public class Virus {
     private String name; // Virus's name
 
     private double R; // Basic reproduction number
-    private double K; // Dispersion factor
+    private double superSpreaderRate; // superSpreaderRate
 
 
     private double infectiousRadius; // infectious radius (/m)
@@ -50,12 +48,12 @@ public class Virus {
         R = r;
     }
 
-    public double getK() {
-        return K;
+    public double getSuperSpreaderRate() {
+        return superSpreaderRate;
     }
 
-    public void setK(double k) {
-        K = k;
+    public void setSuperSpreaderRate(double superSpreaderRate) {
+        this.superSpreaderRate = superSpreaderRate;
     }
 
     public double getInfectiousRadius() {
