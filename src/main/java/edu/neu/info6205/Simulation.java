@@ -59,10 +59,10 @@ public class Simulation {
         Thread panelThread = new Thread(p);
         JFrame frame = new JFrame();
         frame.add(p);
-        frame.setSize(  1400, 1000);
+        frame.setSize(  1400, 980);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        frame.setTitle("SEIR Model Simulation - " + residence.getName());
+        frame.setTitle("SEIR Model Simulation - " + virus.getName()  + "/" + residence.getName());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         panelThread.start();
     }

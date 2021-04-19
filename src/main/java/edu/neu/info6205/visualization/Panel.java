@@ -9,9 +9,13 @@ package edu.neu.info6205.visualization;
 
 import edu.neu.info6205.helper.CSVUtil;
 import edu.neu.info6205.model.*;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -70,6 +74,8 @@ public class Panel extends JPanel implements Runnable {
             e.printStackTrace();
         }
 
+        this.savePic();
+
         this.repaint();
     }
 
@@ -114,7 +120,7 @@ public class Panel extends JPanel implements Runnable {
             }
 
             // draw person node
-            g.fillOval((int) (residence.mappingToDrawing(person.getX()) + residence.getDrawX()), (int) (residence.mappingToDrawing(person.getY()) + residence.getDrawY()), 1, 1);
+            g.fillOval((int) (residence.mappingToDrawing(person.getX()) + residence.getDrawX()), (int) (residence.mappingToDrawing(person.getY()) + residence.getDrawY()), 2, 2);
         }
     }
 
@@ -127,7 +133,7 @@ public class Panel extends JPanel implements Runnable {
         g.setFont(new Font("Helvetica",Font.PLAIN,24));
 
         g.setColor(Color.WHITE);
-        g.drawString("Statistics Overview", captionStartOffsetX, captionStartOffsetY);
+        g.drawString("Statistics Overview " + residence.getVirus().getName() + "/" + residence.getName() , captionStartOffsetX, captionStartOffsetY);
 
 
         captionStartOffsetY += 2 * captionSize;
@@ -153,7 +159,38 @@ public class Panel extends JPanel implements Runnable {
         
         captionStartOffsetY += captionSize;
         g.setColor(new Color(0xC0C0C0));
-        g.drawString(String.format("%-19s: %10d", "Removed Population", residence.getRemoved()), captionStartOffsetX, captionStartOffsetY);
+        g.drawString(String.format("%-19s: %10d", "Recovered Population", residence.getRecovered()), captionStartOffsetX, captionStartOffsetY);
+
+        captionStartOffsetY += captionSize;
+        g.setColor(new Color(0xC0C0C0));
+        g.drawString(String.format("%-19s: %10d", "Dead Population", residence.getDead()), captionStartOffsetX, captionStartOffsetY);
+
+        captionStartOffsetY += captionSize;
+        g.setColor(new Color(0xC0C0C0));
+        g.drawString(String.format("%-19s: %10.4f", "R Factor", timeline.getR()), captionStartOffsetX, captionStartOffsetY);
+
+        captionStartOffsetY += captionSize;
+        g.setColor(new Color(0xC0C0C0));
+        g.drawString(String.format("%-19s: %10.4f", "K Factor", timeline.getK()), captionStartOffsetX, captionStartOffsetY);
+    }
+
+    private int i = 0;
+
+    private void savePic(){
+        BufferedImage image = null;
+        try {
+            image = new Robot().createScreenCapture(
+                    new Rectangle(this.getX(), this.getY(), this.getWidth(), this.getHeight()));
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            ImageIO.write(image, "jpg", new File("/Users/yamato/Downloads/SEIR-Boston/" + i + ".jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        i++;
     }
 
 //    public Timer timer = new Timer();
@@ -175,8 +212,6 @@ public class Panel extends JPanel implements Runnable {
 
     @Override
     public void run() {
-        System.out.printf("%-20s %-20s %-20s %-20s %-20s\n", "Days", "Susceptible", "Exposed", "Infected", "Removed");
-
 //        timer.schedule(new MyTimerTask(), 0, 5000);
     }
 }

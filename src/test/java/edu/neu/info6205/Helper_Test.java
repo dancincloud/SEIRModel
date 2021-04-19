@@ -31,7 +31,7 @@ public class Helper_Test {
 
         String path = "/Users/yamato/Downloads/java-test.csv";
         boolean isSuccess = CSVUtil.exportCsv(new File(path), dataList);
-        System.out.println("Write CSV Success: " + path);
+        assertTrue(isSuccess);
     }
 
     @Test
