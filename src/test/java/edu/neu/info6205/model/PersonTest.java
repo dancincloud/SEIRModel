@@ -44,6 +44,9 @@ public class PersonTest {
 
 	}
 
+	
+	
+	
 	@Test
 	public void distanceTest() {
 		Point point = new Point(3.0, 3.0);
@@ -52,6 +55,19 @@ public class PersonTest {
 		Person p2 = new Person(point1);
 		assertEquals(1.4142135623730951, Point.distance(p1.getLocation(), p2.getLocation()), 0.001);
 	}
+	
+	
+	
+	
+	@Test
+	public void randomeDistance() {
+		Point point = new Point(3.0, 3.0);
+		Point point1 = new Point(2.0, 2.0);
+		Person p1 = new Person(point);
+		Person p2 = new Person(point1);
+		assertEquals(1.4142135623730951, Point.distance(p1.getLocation(), p2.getLocation()), 0.001);
+	}
+	
 
 	@Test
 	public void distanceNotEqualsTest() {
@@ -62,6 +78,17 @@ public class PersonTest {
 		assertNotEquals(2.345, Point.distance(p1.getLocation(), p2.getLocation()));
 	}
 
+	
+	@Test(expected = NullPointerException.class)
+	public void isDistanceExceptionTest() {
+		Point point = new Point(3.0, 3.0);
+		Person p = new Person(point);
+		p.setStatus(PersonStatus.Exposed);
+		p.isContagious();
+
+	}
+	
+	
 	@Test
 	public void returnListTest() {
 		Point point = new Point(3.0, 5.0);
@@ -71,6 +98,9 @@ public class PersonTest {
 		assertEquals(1, p.getReproductList().size());
 	}
 
+	
+	
+	
 	@Test(expected = NullPointerException.class)
 	public void returnEmptyListTest() {
 		Point point = new Point(3.0, 5.0);
