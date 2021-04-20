@@ -29,7 +29,9 @@ public class Helper_Test {
         dataList.add("Days,Susceptible,Exposed,Infected, Removed");
         dataList.add("1,10000,0,10,0");
 
-        String path = "/Users/yamato/Downloads/java-test.csv";
+        Properties fileProps = ConfigParser.parseConfig("file.properties");
+
+        String path = fileProps.getProperty("csvDir") + "java-test.csv";
         boolean isSuccess = CSVUtil.exportCsv(new File(path), dataList);
         assertTrue(isSuccess);
     }

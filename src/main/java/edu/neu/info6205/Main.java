@@ -13,6 +13,7 @@ import edu.neu.info6205.model.*;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -22,9 +23,7 @@ public class Main {
         // output data
         List<String> logs = new ArrayList<String>();
 
-        // set output file path
-        String path = "/Users/yamato/Downloads/SEIR-2019.csv";
-
+        Properties fileProps = ConfigParser.parseConfig("file.properties");
 
         // Initial virus
         Virus virus = Virus.buildByConfig("Virus/Covid-19.properties");
@@ -67,6 +66,7 @@ public class Main {
                 if(residence.getExposed() == 0 && residence.getInfected() == 0){
                     System.out.printf("After fighting with Virus for %d days, the pandemic is over and human win!\n", timeline.getDays());
 
+                    String path = fileProps.getProperty("csvDir") + residence.getVirus().getName() + "_" + residence.getName() + "_" + new Date().getTime() + ".csv";
                     if(CSVUtil.exportCsv(new File(path), logs)) System.out.println("Write CSV Success: " + path);
                     break;
                 }

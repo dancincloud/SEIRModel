@@ -8,6 +8,7 @@ package edu.neu.info6205.visualization;
  */
 
 import edu.neu.info6205.helper.CSVUtil;
+import edu.neu.info6205.helper.ConfigParser;
 import edu.neu.info6205.model.*;
 
 import javax.imageio.ImageIO;
@@ -16,26 +17,27 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.*;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 public class Panel extends JPanel implements Runnable {
     private Residence residence;
     private Timeline timeline;
     private Thread timelineThread;
 
-    private String path;
+    private Properties fileProps;
     private List<String> logs;
 
-    public Panel(Residence residence, Measure measure, String path, List<String> logs) {
+    public Panel(Residence residence, Measure measure, List<String> logs) {
         super();
 
         this.residence = residence;
         this.timeline = new Timeline(residence, measure);
         this.timelineThread = new Thread(this.timeline);
 
-        this.path = path;
+        this.fileProps = ConfigParser.parseConfig("file.properties");
+
         this.logs = logs;
 
         this.setBackground(new Color(0x000000));
@@ -56,6 +58,8 @@ public class Panel extends JPanel implements Runnable {
         if(residence.getExposed() == 0 && residence.getInfected() == 0){
             System.out.printf("After fighting with Virus for %d days, the pandemic is over and human win!\n", timeline.getDays());
 
+            // set output file path
+            String path = fileProps.getProperty("csvDir") + residence.getVirus().getName() + "_" + residence.getName() + "_" + new Date().getTime() + ".csv";
             if(CSVUtil.exportCsv(new File(path), logs)) System.out.println("Write CSV Success: " + path);
             return;
         }
@@ -186,7 +190,8 @@ public class Panel extends JPanel implements Runnable {
         }
 
         try {
-            ImageIO.write(image, "jpg", new File("/Users/yamato/Downloads/SEIR-Boston/" + i + ".jpg"));
+            String path = fileProps.getProperty("imageDir") + residence.getVirus().getName() + "_" + residence.getName() + i + ".jpg";
+            ImageIO.write(image, "jpg", new File(path));
         } catch (IOException e) {
             e.printStackTrace();
         }

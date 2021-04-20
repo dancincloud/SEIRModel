@@ -25,10 +25,6 @@ public class Simulation {
         // output data
         List<String> logs = new ArrayList<String>();
 
-        // set output file path
-        String path = "/Users/yamato/Downloads/SEIR-2019.csv";
-
-
         // Initial virus
         Virus virus = Virus.buildByConfig("Virus/Covid-19.properties");
         logs.addAll(ConfigParser.printObject(virus));
@@ -55,7 +51,7 @@ public class Simulation {
         System.out.println(head.replace(',', ' '));
 
         // Draw
-        Panel p = new Panel(residence, measure, path, logs);
+        Panel p = new Panel(residence, measure, logs);
         Thread panelThread = new Thread(p);
         JFrame frame = new JFrame();
         frame.add(p);
