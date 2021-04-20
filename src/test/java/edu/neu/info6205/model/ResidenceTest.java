@@ -33,6 +33,7 @@ public class ResidenceTest {
 	
 	
 	
+	
 	@Test
 	public void isInAreaTest() {
 		Point point = new Point(1.0, 1.0);
